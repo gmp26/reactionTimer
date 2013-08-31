@@ -14,38 +14,23 @@ angular.module 'reactionTimerApp'
     }
     options = $scope.options
 
-    $scope.optionIcons = ->
-      icon = (name) ->
-        "<i class='icon-" + name + "'> </i>"
-      s = ''
-      s += icon 'fullscreen' if options.size
-      s += icon 'asterisk' if options.shape != 0
-      s += icon 'refresh' if options.turning
-      s += icon 'move' if options.location
-      s += icon 'tint' if options.colour != 0
-      s += icon 'hand-up' if options.onstar != 0
-      s += icon 'ban-circle' if options.penalties
-      s
+    $scope.setOptionIcons = (s) ->
+      #debugger
+      s.size = if options.size then 1 else 0
+      s.shape = if +options.shape != 0 then 1 else 0
+      s.turning = if options.turning then 1 else 0
+      s.location = if options.location then 1 else 0
+      s.colour = if +options.colour != 0 then 1 else 0
+      s.onstar = if +options.onstar != 0 then 1 else 0
+      s.penalties = if options.penalties then 1 else 0
 
-    $scope.display = {
-      sprite: 'icon-star'
-      ms: 0
-      penalties: 0
-      size: 50
-      times: []
-      message: ''
-    }
-    display = $scope.display
+    display = $scope.display = {}
 
     const idle = 'idle'
     const hidden = 'hidden'
     const timing = 'timing'
 
-    $scope.state = {
-      phase: idle
-      startTime: 0
-    }
-    state = $scope.state
+    state = $scope.state = {}
 
     reset = $scope.reset = ->
       display.sprite = 'icon-star'
@@ -54,7 +39,8 @@ angular.module 'reactionTimerApp'
       display.size = 50
       display.times = []
       display.message = ''
-
+      display.top = '100px'
+      display.left = '100px'
       state.phase = idle
       state.startTime = 0
 
@@ -117,7 +103,20 @@ angular.module 'reactionTimerApp'
     $scope.updateTime = ->
       if state.phase == timing
         display.ms = Date.now! - state.startTime
-        $timeout $scope.updateTime, 20
+        if display.ms >= 10000
+          stop!
+        else
+          $timeout $scope.updateTime, 20
+
+    logTimes = ->
+      display.ms = Date.now! - state.startTime
+      row.time = display.ms + 100 * display.penalties
+      row.ms = display.ms
+      row.penalties = display.penalties
+      newRow = {}
+      for key, val of row
+        newRow[key] = val
+      display.times[*] = newRow
 
     reappear = $scope.reappear = ->
       display.sprite = 'icon-star'
@@ -125,24 +124,19 @@ angular.module 'reactionTimerApp'
       state.startTime = Date.now!
       $timeout $scope.updateTime, 20
 
+    row = {options: {}}
     hide = $scope.hide = ->
       state.phase = hidden
       display.sprite = 'icon-none'
-      $timeout reappear, (randInterval 2000, 4000)
+      $scope.setOptionIcons row.options
+      row.hidden = randInterval 2000, 4000
+      $timeout reappear, row.hidden
 
     penalise = $scope.penalise = ->
       $scope.display.penalties++
 
     stop = $scope.stop = ->
-      display.ms = Date.now! - state.startTime
-      display.times[*] = {
-        time: display.ms + 100 * display.penalties
-        ms: display.ms
-        penalties: display.penalties
-        idling: 0
-        hidden: 0
-        options: $scope.optionIcons!
-      }
+      logTimes!
       state.phase = idle
       $scope.display.penalties = 0
       display.sprite = 'icon-star'

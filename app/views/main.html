@@ -1,7 +1,7 @@
 <div class="container" style="background-color:#D9EDF7;height:300px" ng-click="stageClick()">
   <span id="sprite" 
     class="{{display.sprite}} {{options.turning}} positioned"
-    style="font-size:{{display.size}}px;color:{{display.color}}"></span>
+    style="top:{{display.top}};left:{{display.left}};font-size:{{display.size}}px;color:{{display.color}}"></span>
   <h1 class="text-center" style="opacity:0.2">{{scope.idle()}}</h1>
 </div>
 <div class="alert">
@@ -13,7 +13,7 @@
       <h4>Last Reaction Time</h4>
       <div class="row">
         <div class="span2 alert alert-info">
-          <div class="text-center" style="font-size:30px">{{display.ms}} ms</div> 
+          <div class="text-center" style="font-size:30px">{{display.ms | number:0}} ms</div> 
         </div>
       </div>
       <h4>Options</h4>
@@ -51,20 +51,26 @@
       <table class="table table-striped">
         <thead>
           <tr>
-            <th>time</th>
-            <th>reaction</th>
-            <th>penalties</th>
-            <th>hidden</th>
-            <th>options</th>
+            <th>Reaction<br />time</th>
+            <th>after<br />penalties</th>
+            <th>Time<br />hidden</th>
+            <th>Active<br />options</th>
           </tr>
         </thead>
         <tbody>
           <tr ng-repeat="t in display.times">
-            <td>{{t.time}}</td>
-            <td>{{t.ms}}</td>
-            <td>{{t.penalties}}</td>
-            <td>{{t.hidden}}</td>
-            <td ng-bind-html="{{t.options}}"></td>
+            <td>{{t.ms | number:0}}</td>
+            <td>{{t.time | number:0}}</td>
+            <td>{{t.hidden | number:0}}</td>
+            <td>
+              <i class="icon-fullscreen" style="opacity:{{t.options.size}}"> </i>
+              <i class="icon-asterisk" style="opacity:{{t.options.shape}}"> </i>
+              <i class="icon-refresh" style="opacity:{{t.options.turning}}"> </i>
+              <i class="icon-move" style="opacity:{{t.options.location}}"> </i>
+              <i class="icon-tint" style="opacity:{{t.options.colour}}"> </i>
+              <i class="icon-hand-up" style="opacity:{{t.options.onstar}}"> </i>
+              <i class="icon-ban-circle" style="opacity:{{t.options.penalties}}"> </i>
+            </td>
           </tr>
         </tbody>
       </table>

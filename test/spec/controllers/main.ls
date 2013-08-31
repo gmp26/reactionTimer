@@ -79,6 +79,8 @@ describe 'Controller: MainCtrl', (_) ->
       size: 200
       times: [1,2,2]
       message: 'oops!'
+      top:'300px'
+      left:'300px'
     }
     scope.setState {
       phase: hidden
@@ -92,11 +94,16 @@ describe 'Controller: MainCtrl', (_) ->
       size: 50
       times: []
       message: ''
+      top:'100px'
+      left:'100px'
     }
     expect scope.state .toEqual {
       phase: idle
       startTime: 0
     }
+
+  it 'should move the star at random', ->
+
 
   it 'should maintain a millisecond count in timing phase', ->
     spyOn scope, 'updateTime'
