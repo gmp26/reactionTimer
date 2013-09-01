@@ -1,7 +1,11 @@
-<div class="container" style="background-color:#D9EDF7;height:300px" ng-click="stageClick()">
-  <span id="sprite" 
+<div class="container" stage ng-click="stageClick()">
+  <span sprite 
+    class="{{distractor.sprite}} {{options.turning}} positioned"
+    style="top:{{distractor.top}};left:{{distractor.left}};font-size:{{distractor.size}}px;color:{{distractor.colour}};opacity:{{distractor.opacity}}">
+  </span>
+  <span sprite 
     class="{{display.sprite}} {{options.turning}} positioned"
-    style="top:{{display.top}};left:{{display.left}};font-size:{{display.size}}px;color:{{display.color}}"></span>
+    style="top:{{display.top}};left:{{display.left}};font-size:{{display.size}}px;color:black"></span>
   <h1 class="text-center" style="opacity:0.2">{{scope.idle()}}</h1>
 </div>
 <div class="alert">
@@ -9,7 +13,7 @@
 </div>
 <div class="container">
   <div class="row">
-    <div class="span6">
+    <div class="span4">
       <h4>Last Reaction Time</h4>
       <div class="row">
         <div class="span2 alert alert-info">
@@ -23,30 +27,31 @@
       </label>
       <label class="checkbox">
         <input type="checkbox" ng-model="options.shape" ng-true-value="1" ng-false-value="0">
-        <i class="icon-asterisk"> </i>Vary shape
+        <i class="icon-asterisk"> </i>Shape distractors
       </label>
       <label class="checkbox">
         <input type="checkbox" ng-model="options.turning" ng-true-value="icon-spin" ng-false-value="">
-        <i class="icon-refresh"> </i>Turning shape
+        <i class="icon-refresh"> </i>Star and distractors turn
       </label>
       <label class="checkbox">
         <input type="checkbox" ng-model="options.location">
-        <i class="icon-move"> </i>Vary location
+        <i class="icon-move"> </i>Vary star location
       </label>
       <label class="checkbox">
         <input type="checkbox" ng-model="options.colour" ng-true-value="2" ng-false-value="0">
-        <i class="icon-tint"> </i>Vary colour
+        <i class="icon-tint"> </i>Coloured distractors
       </label>
       <label class="checkbox">
         <input type="checkbox" ng-model="options.onstar" ng-true-value="4" ng-false-value="0">
-        <i class="icon-hand-up"> </i>Click on shape
+        <i class="icon-hand-up"> </i>Click on star required
       </label>
       <label class="checkbox">
         <input type="checkbox" ng-model="options.penalties">
         <i class="icon-ban-circle"> </i>Penalties
       </label>
     </div>
-    <div class="span6">
+    <div class="span8">
+      <button class="btn pull-right" ng-click="clearLog()">Clear Table</button>
       <h4>Your times (ms)</h4>
       <table class="table table-striped">
         <thead>

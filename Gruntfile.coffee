@@ -109,7 +109,7 @@ module.exports = (grunt) ->
           port: 9001
           middleware: (connect) -> [
             mountFolder(connect, '<%= yeoman.tmp %>'),
-            mountFolder(connect, 'test')
+            # mountFolder(connect, 'test')
           ]
 
       dist:

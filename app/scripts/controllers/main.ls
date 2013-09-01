@@ -1,8 +1,9 @@
 'use strict'
 
 angular.module 'reactionTimerApp'
-  .controller 'MainCtrl', <[$scope $timeout]> ++ ($scope,$timeout) ->
+  .controller 'MainCtrl', <[$scope $timeout $window]> ++ ($scope,$timeout,$window) ->
 
+ 
     $scope.options = {
       size: false
       shape: 0
@@ -25,6 +26,7 @@ angular.module 'reactionTimerApp'
       s.penalties = if options.penalties then 1 else 0
 
     display = $scope.display = {}
+    distractor = $scope.distractor = {}
 
     const idle = 'idle'
     const hidden = 'hidden'
@@ -41,14 +43,30 @@ angular.module 'reactionTimerApp'
       display.message = ''
       display.top = '100px'
       display.left = '100px'
+
+      distractor.sprite = 'icon-star'
+      distractor.size = 50
+      distractor.top = '100px'
+      distractor.left = '100px'
+      distractor.colour = 'black'
+      distractor.opacity = 0
+
       state.phase = idle
       state.startTime = 0
+      state.stageWidth = 300
+      state.stageHeight = 300
+      state.x = 0.5
+      state.y = 0.5
 
     reset!
 
     setDisplay = $scope.setDisplay = (obj) ->
       for key, value of obj
         display[key] = value
+
+    setDistractor = $scope.setDistractor = (obj) ->
+      for key, value of obj
+        distractor[key] = value
 
     setState = $scope.setState = (obj) ->
       for key, value of obj
@@ -85,20 +103,25 @@ angular.module 'reactionTimerApp'
 
     $scope.penalties = ->
       if options.penalties
-        'There is a 0.1 second penalty for each early click. '
+        'There is a 100ms penalty for each early click. '
       else
         ''
 
-    distractors = [
+    $scope.distractors = [
       'icon-eye-open'
       'icon-ban-refresh'
       'icon-repeat'
       'icon-circle-arrow-right'
       'icon-move'
+      'icon-star'
     ]
 
     randInterval = $scope.randInt = (from, to, tval) ->
       from + (to - from)*(if tval? then tval else Math.random!)
+
+    randPick = (list) ->
+      r = list.length * Math.random!
+      list[Math.floor r]
 
     $scope.updateTime = ->
       if state.phase == timing
@@ -118,6 +141,52 @@ angular.module 'reactionTimerApp'
         newRow[key] = val
       display.times[*] = newRow
 
+    $scope.clearLog = ->
+      display.times = []
+
+    $scope.setLocation = (obj, x, y) ->
+      obj.left = (x*(state.stageWidth - 2*display.size)).toFixed(0) + 'px'
+      obj.top = (y*(state.stageHeight - display.size)).toFixed(0) + 'px'
+
+    $timeout (-> $scope.setLocation display, 0.5, 0.5), 10
+
+    $scope.palette = <[
+      black
+      orange
+      green
+      purple
+    ]>
+
+    $scope.showDistractor = ->
+      distractor.opacity = (1+Math.random!)/2.toFixed(1)
+
+      distractor.size = if options.size
+        randInterval 30, 200
+      else
+        50
+
+      distractor.sprite = if options.shape
+        if options.colour
+          randPick $scope.distractors
+        else
+          randPick $scope.distractors.filter (!= 'icon-star')
+      else
+        'icon-star'
+
+      distractor.colour = if options.colour
+        if distractor.sprite == 'icon-star'
+          randPick $scope.palette.filter (!='black')
+        else
+          randPick $scope.palette
+      else
+        'black'
+
+      $scope.setLocation distractor, Math.random!, Math.random!
+
+      $timeout ->
+        distractor.opacity = 0
+      , 500
+
     reappear = $scope.reappear = ->
       display.sprite = 'icon-star'
       state.phase = timing
@@ -131,6 +200,16 @@ angular.module 'reactionTimerApp'
       $scope.setOptionIcons row.options
       row.hidden = randInterval 2000, 4000
       $timeout reappear, row.hidden
+
+      display.size = if options.size then randInterval 30, 200 else 50
+
+      if options.location
+        $scope.setLocation display, Math.random!, Math.random!
+      if options.colour || options.shape
+        if Math.random! < 0.5
+          $timeout $scope.showDistractor, (randInterval 500, 1400)
+        if Math.random! < 0.75
+          $timeout $scope.showDistractor, (randInterval 1800, row.hidden-200)
 
     penalise = $scope.penalise = ->
       $scope.display.penalties++
