@@ -1,9 +1,9 @@
 <div class="container" stage ng-click="stageClick()">
-  <span sprite 
+  <span sprite
     class="{{distractor.sprite}} {{options.turning}} positioned"
     style="top:{{distractor.top}};left:{{distractor.left}};font-size:{{distractor.size}}px;color:{{distractor.colour}};opacity:{{distractor.opacity}}">
   </span>
-  <span sprite ng-click="starClick(); $event.stopPropagation()"
+  <span sprite ng-click="starClick($event)"
     class="{{display.sprite}} {{options.turning}} positioned"
     style="top:{{display.top}};left:{{display.left}};font-size:{{display.size}}px;color:black"></span>
   <h1 class="text-center" style="opacity:0.2">{{scope.idle()}}</h1>
@@ -17,7 +17,7 @@
       <h4>Last Reaction Time</h4>
       <div class="row">
         <div class="span2 alert alert-info">
-          <div class="text-center" style="font-size:30px">{{display.ms | number:0}} ms</div> 
+          <div class="text-center" style="font-size:30px">{{display.ms | number:0}} ms</div>
         </div>
       </div>
       <h4>Options</h4>

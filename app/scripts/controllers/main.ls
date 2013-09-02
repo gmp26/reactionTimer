@@ -3,7 +3,7 @@
 angular.module 'reactionTimerApp'
   .controller 'MainCtrl', <[$scope $timeout $window]> ++ ($scope,$timeout,$window) ->
 
- 
+
     $scope.options = {
       size: false
       shape: 0
@@ -230,19 +230,20 @@ angular.module 'reactionTimerApp'
       $scope.display.penalties = 0
       display.sprite = 'icon-star'
 
-    $scope.stageClick = ->
-      switch state.phase
-      | idle => hide!
-      | hidden => penalise!
-      | timing => stop! unless options.onstar
-      | otherwise $scope.messages = -> 'invalid phase'
-
-    $scope.starClick =  ->
+    click = ->
       switch state.phase
       | idle => hide!
       | hidden => penalise!
       | timing => stop!
       | otherwise $scope.messages = -> 'invalid phase'
+
+    $scope.stageClick = ->
+      click! unless state.phase == timing && options.onstar
+
+    $scope.starClick = ($event) ->
+      if options.onstar
+        click!
+        $event.stopPropagation()
 
 
     return 1
