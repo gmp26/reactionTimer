@@ -136,16 +136,26 @@ angular.module 'reactionTimerApp'
       row.time = display.ms + 100 * display.penalties
       row.ms = display.ms
       row.penalties = display.penalties
-      newRow = {}
+
+      newRow = {options:{}}
       for key, val of row
         newRow[key] = val
-      display.times[*] = newRow
+
+      $scope.setOptionIcons newRow.options
+      display.times[*] = {
+        time: display.ms + 100 * display.penalties
+        ms: display.ms
+        penalties: display.penalties
+        options: {}
+      }
+      $scope.setOptionIcons display.times[*-1].options
+
 
     $scope.clearLog = ->
       display.times = []
 
     $scope.setLocation = (obj, x, y) ->
-      obj.left = (x*(state.stageWidth - 2*display.size)).toFixed(0) + 'px'
+      obj.left = (x*(state.stageWidth - display.size)).toFixed(0) + 'px'
       obj.top = (y*(state.stageHeight - display.size)).toFixed(0) + 'px'
 
     $timeout (-> $scope.setLocation display, 0.5, 0.5), 10
@@ -220,11 +230,19 @@ angular.module 'reactionTimerApp'
       $scope.display.penalties = 0
       display.sprite = 'icon-star'
 
-    stageClick = $scope.stageClick = ->
+    $scope.stageClick = ->
+      switch state.phase
+      | idle => hide!
+      | hidden => penalise!
+      | timing => stop! unless options.onstar
+      | otherwise $scope.messages = -> 'invalid phase'
+
+    $scope.starClick =  ->
       switch state.phase
       | idle => hide!
       | hidden => penalise!
       | timing => stop!
       | otherwise $scope.messages = -> 'invalid phase'
+
 
     return 1
