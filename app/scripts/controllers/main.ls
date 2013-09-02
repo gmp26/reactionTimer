@@ -6,24 +6,24 @@ angular.module 'reactionTimerApp'
 
     $scope.options = {
       size: false
-      shape: 0
+      shape: false
       turning: false
       location: false
-      colour: 0
-      onstar: 0
+      colour: false
+      onstar: false
       penalties: false
     }
     options = $scope.options
 
-    $scope.setOptionIcons = (s) ->
-      #debugger
-      s.size = if options.size then 1 else 0
-      s.shape = if +options.shape != 0 then 1 else 0
-      s.turning = if options.turning then 1 else 0
-      s.location = if options.location then 1 else 0
-      s.colour = if +options.colour != 0 then 1 else 0
-      s.onstar = if +options.onstar != 0 then 1 else 0
-      s.penalties = if options.penalties then 1 else 0
+    # $scope.setOptionIcons = (s) ->
+    #   #debugger
+    #   s.size = if options.size then 1 else 0
+    #   s.shape = if options.shape then 1 else 0
+    #   s.turning = if options.turning then 1 else 0
+    #   s.location = if options.location then 1 else 0
+    #   s.colour = if options.colour then 1 else 0
+    #   s.onstar = if options.onstar then 1 else 0
+    #   s.penalties = if options.penalties then 1 else 0
 
     display = $scope.display = {}
     distractor = $scope.distractor = {}
@@ -84,7 +84,7 @@ angular.module 'reactionTimerApp'
       'Click anywhere on the stage to make the star vanish, and click again when it reappears.'
       'Click on the star to make it vanish, and click on the star again when it reappears.'
     ]
-    $scope.s1 = -> s1[options.onstar / 4]
+    $scope.s1 = -> s1[+options.onstar]
 
     messages = [
       ''
@@ -98,7 +98,7 @@ angular.module 'reactionTimerApp'
     ]
 
     $scope.messages = ->
-      key = +options.onstar + +options.colour + +options.shape
+      key = (4* +options.onstar) + (2 * +options.colour) + +options.shape
       messages[key]
 
     $scope.penalties = ->
@@ -133,22 +133,18 @@ angular.module 'reactionTimerApp'
 
     logTimes = ->
       display.ms = Date.now! - state.startTime
-      row.time = display.ms + 100 * display.penalties
-      row.ms = display.ms
-      row.penalties = display.penalties
 
-      newRow = {options:{}}
-      for key, val of row
-        newRow[key] = val
-
-      $scope.setOptionIcons newRow.options
       display.times[*] = {
         time: display.ms + 100 * display.penalties
         ms: display.ms
+        hidden: hiddenMs
         penalties: display.penalties
         options: {}
       }
-      $scope.setOptionIcons display.times[*-1].options
+      d = display.times[*-1]
+      for key,val of options
+        d.options[key] = if val then 1 else 0
+      #$scope.setOptionIcons display.times[*-1].options
 
 
     $scope.clearLog = ->
@@ -203,13 +199,14 @@ angular.module 'reactionTimerApp'
       state.startTime = Date.now!
       $timeout $scope.updateTime, 20
 
-    row = {options: {}}
+    var hiddenMs
+
     hide = $scope.hide = ->
       state.phase = hidden
       display.sprite = 'icon-none'
-      $scope.setOptionIcons row.options
-      row.hidden = randInterval 2000, 4000
-      $timeout reappear, row.hidden
+
+      hiddenMs := randInterval 2000, 4000
+      $timeout reappear, hiddenMs
 
       display.size = if options.size then randInterval 30, 200 else 50
 
@@ -219,7 +216,7 @@ angular.module 'reactionTimerApp'
         if Math.random! < 0.5
           $timeout $scope.showDistractor, (randInterval 500, 1400)
         if Math.random! < 0.75
-          $timeout $scope.showDistractor, (randInterval 1800, row.hidden-200)
+          $timeout $scope.showDistractor, (randInterval 1800, hiddenMs-200)
 
     penalise = $scope.penalise = ->
       $scope.display.penalties++
@@ -238,12 +235,12 @@ angular.module 'reactionTimerApp'
       | otherwise $scope.messages = -> 'invalid phase'
 
     $scope.stageClick = ->
-      click! unless state.phase == timing && options.onstar
+      click! unless (state.phase == timing) && options.onstar
 
     $scope.starClick = ($event) ->
       if options.onstar
         click!
-        $event.stopPropagation()
+        $event.stopPropagation!
 
 
     return 1

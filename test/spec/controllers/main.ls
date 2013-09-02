@@ -28,11 +28,11 @@ describe 'Controller: MainCtrl', (_) ->
   it 'should start idle with all options off', ->
     expect scope.options .toEqual {
       size: false
-      shape: 0
+      shape: false
       turning: false
       location: false
-      colour: 0
-      onstar: 0
+      colour: false
+      onstar: false
       penalties: false
     }
     expect scope.state.phase .toEqual idle
@@ -85,7 +85,7 @@ describe 'Controller: MainCtrl', (_) ->
     scope.setState do
       phase: hidden
       startTime: 2000
-    
+
     scope.reset!
     expect scope.display .toEqual do
       sprite: 'icon-star'
@@ -96,7 +96,6 @@ describe 'Controller: MainCtrl', (_) ->
       message: ''
       top:'100px'
       left:'100px'
-      colour: 'black'
 
     expect scope.state .toEqual do
       phase: idle
@@ -108,16 +107,8 @@ describe 'Controller: MainCtrl', (_) ->
 
   it 'setLocation should set top left position of star', ->
     scope.setLocation 0.5, 0.5
-    expect scope.display.top .toEqual '125px'
-    expect scope.display.left .toEqual '125px'
-
-  it 'setColour should pick a random palette colour', ->
-    scope.setColour!
-    expect scope.palette .toContain scope.display.colour
-    scope.setColour!
-    expect scope.palette .toContain scope.display.colour
-    scope.setColour!
-    expect scope.palette .toContain scope.display.colour
+    expect scope.display.top .toEqual '100px'
+    expect scope.display.left .toEqual '100px'
 
   it 'should maintain a millisecond count in timing phase', ->
     spyOn scope, 'updateTime'
