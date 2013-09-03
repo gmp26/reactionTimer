@@ -364,6 +364,19 @@ module.exports = (grunt) ->
           '<%= yeoman.dist %>/scripts/scripts.js': [
             '<%= yeoman.dist %>/scripts/scripts.js'
           ]
+
+    rsync:
+      options:
+        args: ["--verbose", "--archive"]
+        exclude: [".git*", "node_modules"]
+        recursive: true
+      publish:
+        options: [
+          src: 'dist/'
+          dest: '/home/gmp26/test'
+          host: 'gmp26@maths.org'
+        ]
+
   )
 
   grunt.registerTask('server', (target) ->
