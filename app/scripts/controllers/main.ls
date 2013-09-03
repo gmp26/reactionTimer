@@ -197,7 +197,7 @@ angular.module 'reactionTimerApp'
       display.sprite = 'icon-star'
       state.phase = timing
       state.startTime = Date.now!
-      $timeout $scope.updateTime, 20
+      $timeout $scope.updateTime, 500
 
     var hiddenMs
 

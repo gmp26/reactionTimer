@@ -169,7 +169,7 @@ module.exports = (grunt) ->
     lsc:
       options:
         bare: true
-      
+
       dist:
         files: [
           expand: true
@@ -286,8 +286,12 @@ module.exports = (grunt) ->
           dest: '<%= yeoman.dist %>'
           src: [
             '*.{ico,png,txt}'
-            '.htaccess',
-            'bower_components/**/*'
+            '.htaccess'
+            'bower_components/angular*/**/*.js'
+            '!bower_components/angular*/**/*.min.js'
+            'bower_components/font-awesome/font/*'
+            'bower_components/es5-shim/es5-shim.js'
+            'bower_components/json3/lib/json3.min.js'
             'images/{,*/}*.{gif,webp}'
             'styles/fonts/*'
           ]
