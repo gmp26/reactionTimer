@@ -289,6 +289,7 @@ module.exports = (grunt) ->
             '.htaccess'
             'bower_components/angular*/**/*.js'
             '!bower_components/angular*/**/*.min.js'
+            '!bower_components/angular*/angular-mocks/*.js'
             'bower_components/font-awesome/font/*'
             'bower_components/es5-shim/es5-shim.js'
             'bower_components/json3/lib/json3.min.js'
