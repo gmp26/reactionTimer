@@ -76,7 +76,7 @@ module.exports = (grunt) ->
         actions:[
           name: 'bootstrap patch for font-awesome',
           search: '@FontAwesomePath:\\s*"\\.\\.\\/font";'
-          replace: '@FontAwesomePath:    "./bower_components/font-awesome/font";'
+          replace: '@FontAwesomePath:    "../bower_components/font-awesome/font";'
           flags: 'gm'
         ]
 
@@ -368,15 +368,13 @@ module.exports = (grunt) ->
     rsync:
       options:
         args: ["--verbose", "--archive"]
-        exclude: [".git*", "node_modules"]
+        exclude: [".git*", "node_modules", ".htaccess"]
         recursive: true
       publish:
-        options: [
+        options:
           src: 'dist/'
-          dest: '/home/gmp26/test'
-          host: 'gmp26@maths.org'
-        ]
-
+          dest: '/www/nrich/html/reactionTimerApp'
+          host: 'maths.org'
   )
 
   grunt.registerTask('server', (target) ->
