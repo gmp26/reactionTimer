@@ -55,7 +55,7 @@ describe 'Controller: MainCtrl', (_) ->
     # pretend that 500ms has elapsed
     scope.state.startTime -= 500
     scope.stageClick!
-    expect scope.display.ms .toBe 500
+    expect scope.display.ms .toBe 501
     expect scope.state.phase .toBe idle
     expect scope.display.penalties .toBe 0
 
